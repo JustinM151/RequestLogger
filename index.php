@@ -7,12 +7,9 @@
  */
 
 $rawBody = file_get_contents('php://input');
-$getBody = $_GET;
-$posBody = $_POST;
 
-if(!empty($rawBody) || !empty($getBody) || !empty($posBody)) {
-    $body = "NEW Request:\n";
-    $body .= "Sent From: ".$_SERVER['REMOTE_ADDR']."\n";
+if(!empty($rawBody) || !empty($_GET) || !empty($_POST)) {
+    $body = "New Request From: ".$_SERVER['REMOTE_ADDR']."\n";
 
     $body .= "\nGET Request Data:\n";
     foreach ($_GET as $k=>$v) {
@@ -25,7 +22,7 @@ if(!empty($rawBody) || !empty($getBody) || !empty($posBody)) {
     }
 
     $body .= "\nRAW Request Data:\n";
-    $body .= file_get_contents('php://input')."\n";
+    $body .= $rawBody."\n";
 
     $body .= "\nSupplemental Data:\n";
     foreach($_SERVER as $k=>$v) {
@@ -38,10 +35,10 @@ if(!empty($rawBody) || !empty($getBody) || !empty($posBody)) {
     $bytes = file_put_contents(getcwd().'/captures/'.$filename,$body,FILE_APPEND);
 
     if($bytes !== false) {
-        file_put_contents("log.txt",date('m/d/Y H:i:s').": New request stored in captures/".$filename."\n",FILE_APPEND);
+        file_put_contents("log.txt",date('m/d/Y H:i:s').",REQUEST,captures/".$filename."\n",FILE_APPEND);
         echo "Request Stored Successfully: ".$filename;
     } else {
-        file_put_contents("log.txt",date('m/d/Y H:i:s').": ERROR - Unable to store new request.\n",FILE_APPEND);
+        file_put_contents("log.txt",date('m/d/Y H:i:s').",ERROR\n",FILE_APPEND);
         echo "Unable to write body of request to file.";
     }
 }
